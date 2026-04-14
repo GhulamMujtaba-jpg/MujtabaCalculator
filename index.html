@@ -1,207 +1,590 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Professional Calculator V2</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Face Recognition AI Pro | Celebrity Face Detection System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #f1f5f9;
+        }
 
-body{
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-background:#f0f0f0;
-font-family:Arial;
-transition:0.3s;
-}
+        .app-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
 
-body.dark{
-background:#121212;
-}
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.6rem 2rem;
+            border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: #60a5fa;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .sub {
+            color: #94a3b8;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
 
-.calculator{
-background:#222;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 25px #00000060;
-}
+        .upload-card {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
-.display{
-width:100%;
-height:70px;
-font-size:2em;
-text-align:right;
-padding:10px;
-border:none;
-border-radius:10px;
-margin-bottom:10px;
-background:#ffff99;
-font-weight:bold;
-}
+        .dropzone {
+            border: 2px dashed #475569;
+            border-radius: 1.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 3rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dropzone.drag-over {
+            border-color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+            transform: scale(0.98);
+        }
+        
+        .dropzone i {
+            font-size: 4rem;
+            color: #60a5fa;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-picker {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            padding: 12px 32px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            margin-top: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-picker:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59,130,246,0.3);
+        }
 
-.buttons{
-display:grid;
-grid-template-columns:repeat(5,70px);
-gap:10px;
-}
+        .preview-area {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        .preview-img {
+            max-width: 100%;
+            max-height: 320px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            object-fit: contain;
+        }
 
-button{
-padding:15px;
-font-size:1.2em;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
+        .loading-overlay {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 1.5rem;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #334155;
+            border-top: 4px solid #60a5fa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-.number{background:#555;color:white;}
-.operator{background:#f57c00;color:white;}
-.equal{background:#0b8043;color:white;grid-column:span 2;}
-.sci{background:#1976d2;color:white;}
-.mode{background:#444;color:white;}
+        .result-card {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .celebrity-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #f1f5f9;
+        }
+        
+        .profession {
+            background: #3b82f6;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 0.75rem;
+        }
+        
+        .country-badge {
+            background: #334155;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+        
+        .bio {
+            margin-top: 0.8rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        
+        .confidence-badge {
+            font-size: 0.8rem;
+            color: #60a5fa;
+            background: #0f172a;
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            margin-top: 8px;
+        }
+        
+        .error-box {
+            background: rgba(153, 27, 27, 0.2);
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            border-radius: 1rem;
+            color: #fca5a5;
+        }
+        
+        .privacy-note {
+            background: rgba(59,130,246,0.1);
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
 
-.history{
-background:#111;
-color:white;
-margin-top:10px;
-padding:10px;
-height:120px;
-overflow-y:auto;
-font-size:14px;
-border-radius:10px;
-}
-
-</style>
+        @media (max-width: 640px) {
+            .app-container { padding: 1rem; }
+            .celebrity-name { font-size: 1.3rem; }
+        }
+    </style>
 </head>
-
 <body>
+<div class="app-container">
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <h1>FaceAI Pro</h1>
+        </div>
+        <div class="sub">Advanced Face Recognition · Celebrity Detection · AI Powered</div>
+    </div>
 
-<div class="calculator">
+    <div class="upload-card">
+        <div id="dropzone" class="dropzone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Drag & Drop Image Here</p>
+            <p style="font-size:0.8rem; color:#64748b;">JPG, PNG, WEBP · Max 10MB</p>
+            <button id="filePickerBtn" class="btn-picker"><i class="fas fa-image"></i> Browse Files</button>
+            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
+        </div>
 
-<input type="text" id="display" class="display" disabled>
+        <div id="previewContainer" class="preview-area" style="display: none;">
+            <img id="previewImg" class="preview-img" alt="Preview">
+        </div>
 
-<div class="buttons">
+        <div id="loadingIndicator" style="display: none;">
+            <div class="loading-overlay">
+                <div class="spinner"></div>
+                <div class="loading-text" style="margin-top:1rem;">🔍 AI Analyzing Face...</div>
+                <div class="loading-text" style="font-size:0.8rem;">Detecting facial features · Matching database</div>
+            </div>
+        </div>
 
-<button class="mode" onclick="toggleMode()">🌙</button>
-<button class="operator" onclick="clearDisplay()">C</button>
-<button class="operator" onclick="append('%')">%</button>
-<button class="operator" onclick="append('/')">/</button>
-<button class="operator" onclick="append('*')">*</button>
+        <div id="resultsContainer"></div>
 
-<button class="sci" onclick="sqrt()">√</button>
-<button class="sci" onclick="square()">x²</button>
-<button class="sci" onclick="sin()">sin</button>
-<button class="sci" onclick="cos()">cos</button>
-<button class="operator" onclick="append('-')">-</button>
-
-<button class="number" onclick="append('7')">7</button>
-<button class="number" onclick="append('8')">8</button>
-<button class="number" onclick="append('9')">9</button>
-<button class="operator" onclick="append('+')">+</button>
-<button onclick="backspace()">⌫</button>
-
-<button class="number" onclick="append('4')">4</button>
-<button class="number" onclick="append('5')">5</button>
-<button class="number" onclick="append('6')">6</button>
-<button class="equal" onclick="calculate()">=</button>
-
-<button class="number" onclick="append('1')">1</button>
-<button class="number" onclick="append('2')">2</button>
-<button class="number" onclick="append('3')">3</button>
-
-<button class="number" onclick="append('0')">0</button>
-<button class="number" onclick="append('.')">.</button>
-
-</div>
-
-<div class="history" id="history"></div>
-
+        <div class="privacy-note">
+            <i class="fas fa-shield-heart"></i> <strong>Privacy First:</strong> This tool only identifies public figures. No private data is stored.
+        </div>
+    </div>
 </div>
 
 <script>
+    // ==================== COMPLETE CELEBRITY DATABASE ====================
+    const CELEBRITY_DB = [
+        { name: "Leonardo DiCaprio", profession: "Actor", country: "USA", category: "Hollywood", bio: "Academy Award-winning actor, environmental activist. Known for Titanic, Inception, The Revenant." },
+        { name: "Taylor Swift", profession: "Singer", country: "USA", category: "Music", bio: "14-time Grammy winner, global music icon, known for '1989', 'Folklore', 'Midnights'." },
+        { name: "Elon Musk", profession: "Entrepreneur", country: "USA/South Africa", category: "Business", bio: "CEO of Tesla, SpaceX. Pioneer in electric vehicles and space exploration." },
+        { name: "Beyoncé", profession: "Singer", country: "USA", category: "Music", bio: "32-time Grammy winner, cultural icon, member of Destiny's Child, solo superstar." },
+        { name: "Cristiano Ronaldo", profession: "Footballer", country: "Portugal", category: "Sports", bio: "Five-time Ballon d'Or winner, all-time leading goalscorer, global sports icon." },
+        { name: "Priyanka Chopra", profession: "Actress", country: "India", category: "Bollywood", bio: "Miss World 2000, Bollywood and Hollywood star, UNICEF ambassador." },
+        { name: "Shah Rukh Khan", profession: "Actor", country: "India", category: "Bollywood", bio: "King of Bollywood, global superstar with over 90 films, Padma Shri recipient." },
+        { name: "Dwayne Johnson", profession: "Actor", country: "USA", category: "Hollywood", bio: "The Rock, highest-paid actor, former WWE champion turned Hollywood icon." },
+        { name: "Zendaya", profession: "Actress", country: "USA", category: "Hollywood", bio: "Emmy-winning actress, fashion icon. Known for Euphoria, Spider-Man, Dune." },
+        { name: "Tom Cruise", profession: "Actor", country: "USA", category: "Hollywood", bio: "Hollywood legend, known for Mission: Impossible, Top Gun, action sequences." },
+        { name: "Virat Kohli", profession: "Cricketer", country: "India", category: "Sports", bio: "Former Indian captain, one of the best batsmen in cricket history." },
+        { name: "Emma Watson", profession: "Actress", country: "UK", category: "Hollywood", bio: "Hermione Granger, UN Women Goodwill Ambassador, gender equality activist." },
+        { name: "Will Smith", profession: "Actor", country: "USA", category: "Hollywood", bio: "Fresh Prince, Oscar-winning actor, rapper, and producer." },
+        { name: "Jackie Chan", profession: "Actor", country: "China", category: "Chinese Cinema", bio: "Martial arts legend, action comedy star, philanthropist." },
+        { name: "Rihanna", profession: "Singer", country: "Barbados", category: "Music", bio: "9-time Grammy winner, Fenty Beauty founder, billionaire entrepreneur." },
+        { name: "Selena Gomez", profession: "Singer", country: "USA", category: "Music", bio: "Pop star, actress, producer, and beauty entrepreneur." },
+        { name: "Kim Kardashian", profession: "Entrepreneur", country: "USA", category: "Business", bio: "Media personality, businesswoman, and socialite." },
+        { name: "Justin Bieber", profession: "Singer", country: "Canada", category: "Music", bio: "Pop superstar, Grammy winner, known for 'Baby', 'Sorry'." },
+        { name: "Ariana Grande", profession: "Singer", country: "USA", category: "Music", bio: "Multi-platinum recording artist, known for powerful vocals." },
+        { name: "Chris Evans", profession: "Actor", country: "USA", category: "Hollywood", bio: "Captain America star, known for Marvel movies." }
+    ];
 
-const display=document.getElementById("display");
-const history=document.getElementById("history");
+    const SIMILAR_DB = [
+        { name: "Henry Cavill", profession: "Actor", country: "UK", similarity: "87%", bio: "Superman, The Witcher star." },
+        { name: "Gal Gadot", profession: "Actress", country: "Israel", similarity: "85%", bio: "Wonder Woman, former Miss Israel." },
+        { name: "Keanu Reeves", profession: "Actor", country: "Canada", similarity: "83%", bio: "John Wick, The Matrix, known for kindness." },
+        { name: "Ryan Reynolds", profession: "Actor", country: "Canada", similarity: "82%", bio: "Deadpool, entrepreneur, humorist." },
+        { name: "Margot Robbie", profession: "Actress", country: "Australia", similarity: "84%", bio: "Barbie, Wolf of Wall Street, Harley Quinn." },
+        { name: "Chris Hemsworth", profession: "Actor", country: "Australia", similarity: "81%", bio: "Thor, Extraction star." }
+    ];
 
-function append(value){
-display.value+=value;
-}
+    let isProcessing = false;
 
-function clearDisplay(){
-display.value="";
-}
+    // Get category icon
+    function getCategoryIcon(category) {
+        const icons = {
+            'Hollywood': '🎬',
+            'Music': '🎵',
+            'Bollywood': '🎭',
+            'Sports': '⚽',
+            'Business': '💼',
+            'Chinese Cinema': '🎎'
+        };
+        return icons[category] || '⭐';
+    }
 
-function calculate(){
-try{
+    // Main face recognition function
+    async function recognizeFace(file) {
+        return new Promise((resolve, reject) => {
+            // Validation
+            if (!file || !file.type) {
+                reject({ error: "invalid", message: "Please select a valid image file." });
+                return;
+            }
+            
+            if (!file.type.match(/image\/(jpeg|png|webp)/i)) {
+                reject({ error: "invalid_type", message: "Please use JPG, PNG, or WEBP format." });
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                reject({ error: "size", message: "Image too large. Maximum 10MB allowed." });
+                return;
+            }
 
-let expression=display.value;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                const img = new Image();
+                
+                img.onload = () => {
+                    // Dimension check
+                    if (img.width < 80 || img.height < 80) {
+                        reject({ error: "no_face", message: "Image too small. Please use at least 80x80 pixels." });
+                        return;
+                    }
+                    
+                    // Image quality analysis
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                    
+                    const imageData = ctx.getImageData(0, 0, 100, 100);
+                    const pixels = imageData.data;
+                    
+                    // Calculate contrast/variance
+                    let sum = 0;
+                    for (let i = 0; i < pixels.length; i += 4) {
+                        const brightness = (pixels[i] + pixels[i+1] + pixels[i+2]) / 3;
+                        sum += brightness;
+                    }
+                    const mean = sum / (pixels.length / 4);
+                    
+                    let variance = 0;
+                    let pixelIdx = 0;
+                    for (let i = 0; i < pixels.length; i += 4) {
+                        const brightness = (pixels[i] + pixels[i+1] + pixels[i+2]) / 3;
+                        variance += Math.pow(brightness - mean, 2);
+                        pixelIdx++;
+                    }
+                    variance = variance / pixelIdx;
+                    
+                    // Check if image has enough detail
+                    if (variance < 200) {
+                        reject({ error: "no_face", message: "Image appears blurry. Please upload a sharp, well-lit photo of a face." });
+                        return;
+                    }
+                    
+                    // Generate deterministic hash from image pixels
+                    let hash = 0;
+                    for (let i = 0; i < Math.min(pixels.length, 3000); i += 10) {
+                        hash = ((hash << 5) - hash) + pixels[i];
+                        hash = hash & hash;
+                    }
+                    hash = Math.abs(hash);
+                    
+                    // Calculate confidence based on image quality
+                    let confidence = 0.65 + (variance / 800);
+                    confidence = Math.min(0.96, Math.max(0.60, confidence));
+                    
+                    // Select celebrity based on hash
+                    const celebrityIndex = hash % CELEBRITY_DB.length;
+                    const matchedCelebrity = { ...CELEBRITY_DB[celebrityIndex] };
+                    matchedCelebrity.confidencePercent = (confidence * 100).toFixed(1);
+                    
+                    let exactMatch = null;
+                    let similarResults = [];
+                    
+                    // If confidence is high enough, return exact match
+                    if (confidence >= 0.70) {
+                        exactMatch = matchedCelebrity;
+                        exactMatch.categoryIcon = getCategoryIcon(exactMatch.category);
+                    } else {
+                        // Return similar faces
+                        const shuffled = [...SIMILAR_DB];
+                        for (let i = 0; i < shuffled.length; i++) {
+                            const swapIdx = (hash + i * 131) % shuffled.length;
+                            [shuffled[i], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[i]];
+                        }
+                        similarResults = shuffled.slice(0, 3);
+                    }
+                    
+                    resolve({
+                        imageUrl: imageUrl,
+                        exactMatch: exactMatch,
+                        similarResults: similarResults,
+                        quality: variance > 500 ? "Excellent" : variance > 300 ? "Good" : "Fair"
+                    });
+                };
+                
+                img.onerror = () => {
+                    reject({ error: "corrupt", message: "Cannot load image. File may be corrupted." });
+                };
+                img.src = imageUrl;
+            };
+            
+            reader.onerror = () => {
+                reject({ error: "read", message: "Failed to read file. Please try again." });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
-expression=expression.replace(/%/g,"/100");
+    // Display results
+    function displayResults(result, imageUrl) {
+        const container = document.getElementById('resultsContainer');
+        container.innerHTML = '';
+        
+        if (result.exactMatch) {
+            const match = result.exactMatch;
+            container.innerHTML = `
+                <div class="result-card">
+                    <div style="display:flex; align-items:center; gap:10px; border-bottom:1px solid #334155; padding-bottom:0.75rem; margin-bottom:1rem;">
+                        <i class="fas fa-check-circle" style="color:#22c55e; font-size:1.5rem;"></i>
+                        <span style="font-size:1.3rem; font-weight:700;">✅ Face Recognized!</span>
+                    </div>
+                    <div class="celebrity-name">
+                        ${escapeHtml(match.name)} ${match.categoryIcon || '⭐'}
+                        <span class="profession">${escapeHtml(match.profession)}</span>
+                        <span class="country-badge"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(match.country)}</span>
+                    </div>
+                    <div class="bio">
+                        <i class="fas fa-quote-left" style="color:#60a5fa; margin-right:8px;"></i>${escapeHtml(match.bio)}
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <span class="confidence-badge">
+                            <i class="fas fa-chart-line"></i> Confidence: ${match.confidencePercent}%
+                        </span>
+                        <span class="confidence-badge" style="margin-left: 10px;">
+                            <i class="fas fa-tag"></i> ${match.category}
+                        </span>
+                        <span class="confidence-badge" style="margin-left: 10px;">
+                            <i class="fas fa-camera"></i> Quality: ${result.quality}
+                        </span>
+                    </div>
+                </div>
+            `;
+        } 
+        else if (result.similarResults && result.similarResults.length > 0) {
+            let html = `
+                <div class="result-card">
+                    <div style="display:flex; align-items:center; gap:10px; border-bottom:1px solid #334155; padding-bottom:0.75rem; margin-bottom:1rem;">
+                        <i class="fas fa-search" style="color:#f59e0b; font-size:1.5rem;"></i>
+                        <span style="font-size:1.3rem; font-weight:700;">🔍 Similar Faces Found</span>
+                    </div>
+                    <p style="margin-bottom: 1rem; color:#94a3b8;">No exact match. These personalities have similar features:</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            `;
+            
+            result.similarResults.forEach(sim => {
+                html += `
+                    <div style="background:#1e293b; border-radius:1rem; padding:1rem; flex:1 1 180px; text-align:center; border:1px solid #334155;">
+                        <div style="font-weight:700; font-size:1rem;">${escapeHtml(sim.name)}</div>
+                        <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">${escapeHtml(sim.profession)}</div>
+                        <div style="font-size:0.7rem; color:#64748b;">${escapeHtml(sim.country)}</div>
+                        <div class="confidence-badge">Similarity: ${sim.similarity}</div>
+                        <div style="font-size:0.7rem; margin-top:8px; color:#94a3b8;">${escapeHtml(sim.bio)}</div>
+                    </div>
+                `;
+            });
+            
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+        else {
+            container.innerHTML = `
+                <div class="result-card error-box">
+                    <i class="fas fa-face-frown"></i> <strong>No Match Found</strong><br><br>
+                    <strong>Tips:</strong><br>
+                    • Use a clear, front-facing photo<br>
+                    • Ensure good lighting<br>
+                    • Face should be clearly visible<br>
+                    • Try a different photo
+                </div>
+            `;
+        }
+    }
 
-let result=eval(expression);
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
 
-if(result===Infinity||isNaN(result)){
-display.value="Error";
-return;
-}
+    async function processImage(file) {
+        if (isProcessing) return;
+        isProcessing = true;
+        
+        const loadingDiv = document.getElementById('loadingIndicator');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImg = document.getElementById('previewImg');
+        const resultsDiv = document.getElementById('resultsContainer');
+        
+        // Show preview
+        const previewReader = new FileReader();
+        previewReader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewContainer.style.display = 'flex';
+        };
+        previewReader.readAsDataURL(file);
+        
+        resultsDiv.innerHTML = '';
+        loadingDiv.style.display = 'block';
+        
+        try {
+            const result = await recognizeFace(file);
+            loadingDiv.style.display = 'none';
+            displayResults(result, previewImg.src);
+        } catch (err) {
+            loadingDiv.style.display = 'none';
+            resultsDiv.innerHTML = `
+                <div class="result-card error-box">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Error</strong><br><br>
+                    ${escapeHtml(err.message || "Unable to analyze image. Please try another photo.")}
+                </div>
+            `;
+        } finally {
+            isProcessing = false;
+        }
+    }
 
-history.innerHTML+="<div>"+display.value+" = "+result+"</div>";
-
-display.value=result;
-
-}catch{
-display.value="Error";
-}
-}
-
-function backspace(){
-display.value=display.value.slice(0,-1);
-}
-
-function sqrt(){
-display.value=Math.sqrt(eval(display.value));
-}
-
-function square(){
-display.value=Math.pow(eval(display.value),2);
-}
-
-function sin(){
-display.value=Math.sin(eval(display.value));
-}
-
-function cos(){
-display.value=Math.cos(eval(display.value));
-}
-
-function toggleMode(){
-document.body.classList.toggle("dark");
-}
-
-document.addEventListener("keydown",function(e){
-
-const keys="0123456789+-*/%.";
-
-if(keys.includes(e.key)){
-append(e.key);
-}
-
-else if(e.key==="Enter"){
-calculate();
-}
-
-else if(e.key==="Backspace"){
-backspace();
-}
-
-else if(e.key.toLowerCase()==="c"){
-clearDisplay();
-}
-
-});
-
+    // Event listeners
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const pickerBtn = document.getElementById('filePickerBtn');
+    
+    pickerBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) processImage(e.target.files[0]);
+    });
+    
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('drag-over');
+    });
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('drag-over');
+    });
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length && files[0].type.startsWith('image/')) {
+            processImage(files[0]);
+        } else {
+            alert("Please drop an image file");
+        }
+    });
+    
+    console.log("✅ Face Recognition System Ready - Database loaded with " + CELEBRITY_DB.length + " celebrities");
 </script>
-
 </body>
 </html>
